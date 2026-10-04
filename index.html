@@ -171,7 +171,7 @@
                         <label>Selecciona el tamaño:</label>
                         <div class="opciones-radio">
                             <label><input type="radio" name="tamano-miel" value="250g" checked onclick="actualizarPrecio('miel', 20)"> 250g</label>
-                            <label><input type="radio" name="tamano-miel" value="500g" onclick="actualizarPrecio('miel', 'Por consultar')"> 500g</label>
+                            <label><input type="radio" name="tamano-miel" value="500g" onclick="actualizarPrecio('miel', 40)"> 500g</label>
                         </div>
                     </div>
                     <div class="precio-display" id="precio-miel">S/. 20.00</div>
@@ -193,7 +193,7 @@
                         <label>Selecciona el tamaño:</label>
                         <div class="opciones-radio">
                             <label><input type="radio" name="tamano-cera" value="250g" checked onclick="actualizarPrecio('cera', 20)"> 250g</label>
-                            <label><input type="radio" name="tamano-cera" value="500g" onclick="actualizarPrecio('cera', 'Por consultar')"> 500g</label>
+                            <label><input type="radio" name="tamano-cera" value="500g" onclick="actualizarPrecio('cera', 40)"> 500g</label>
                         </div>
                     </div>
                     <div class="precio-display" id="precio-cera">S/. 20.00</div>
@@ -239,7 +239,6 @@
         }
 
         function enviarPedido(producto, nombreRadio, idPrecio) {
-            // Recuerda cambiar este número por tu celular real de ventas
             const numeroTelefono = "51941983088"; 
             
             const opciones = document.getElementsByName(nombreRadio);
@@ -261,7 +260,7 @@
             const mensaje = `Hola Factor Api, me interesa comprar el producto: ${producto} en la presentación de ${tamanoSeleccionado} ${detallePrecio}.`;
             const mensajeCodificado = encodeURIComponent(mensaje);
             
-            const enlaceWhatsApp = `https://wa.me{numeroTelefono}?text=${mensajeCodificado}`;
+            const enlaceWhatsApp = `https://whatsapp.com{numeroTelefono}&text=${mensajeCodificado}`;
             window.open(enlaceWhatsApp, '_blank');
         }
     </script>
