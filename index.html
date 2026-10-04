@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factor Api - Catálogo Oficial</title>
+    <style>
+        :root {
+            --amarillo-miel: #ffb300;
+            --marron-oscuro: #2b1810;
+            --crema-fondo: #fdfaf6;
+            --verde-whatsapp: #25d366;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--crema-fondo);
+            color: var(--marron-oscuro);
+        }
+
+        header {
+            background-color: var(--amarillo-miel);
+            text-align: center;
+            padding: 30px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        .grid-catalogo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card-item {
+            background: #fff;
+            border: 1px solid #ebdccb;
+            border-radius: 12px;
+            width: calc(33.333% - 14px);
+            min-width: 280px;
+            box-sizing: border-box;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 900px) {
+            .card-item {
+                width: calc(50% - 10px);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .card-item {
+                width: 100%;
+            }
+        }
+
+        .icono-prod {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .card-item h3 {
+            margin: 10px 0 5px 0;
+            font-size: 1.4rem;
+            text-align: center;
+        }
+
+        .descripcion {
+            font-size: 0.95rem;
+            color: #6d5c56;
+            text-align: center;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .selector-medida {
+            margin-bottom: 20px;
+        }
+
+        .selector-medida label {
+            display: block;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .opciones-radio {
+            display: flex;
+            justify-content: space-around;
+            background: #f5ece1;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .opciones-radio label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .precio-display {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #d35400;
+            margin-bottom: 15px;
+        }
+
+        .btn-whatsapp {
+            background-color: var(--verde-whatsapp);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.3s;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #20ba56;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🍯 Factor Api</h1>
+        <p>Catálogo de Productos Apícolas</p>
+    </header>
+
+    <div class="container">
+        <div class="grid-catalogo">
+
+            <!-- PRODUCTO 1: MIEL -->
+            <div class="card-item">
+                <div>
+                    <div class="icono-prod">🍯</div>
+                    <h3>Miel de Abeja Pura</h3>
+                    <p class="descripcion">Miel de excelente calidad, cosechada de manera artesanal y 100% natural.</p>
+                </div>
+                <div>
+                    <div class="selector-medida">
+                        <label>Selecciona el tamaño:</label>
+                        <div class="opciones-radio">
+                            <label><input type="radio" name="tamano-miel" value="250g" checked onclick="actualizarPrecio('miel', 20)"> 250g</label>
+                            <label><input type="radio" name="tamano-miel" value="500g" onclick="actualizarPrecio('miel', 'Por consultar')"> 500g</label>
+                        </div>
+                    </div>
+                    <div class="precio-display" id="precio-miel">S/. 20.00</div>
+                    <button class="btn-whatsapp" onclick="enviarPedido('Miel de Abeja Pura', 'tamano-miel', 'precio-miel')">
+                        📱 Pedir por WhatsApp
+                    </button>
+                </div>
+            </div>
+
+            <!-- PRODUCTO 2: CERA -->
+            <div class="card-item">
+                <div>
+                    <div class="icono-prod">🐝</div>
+                    <h3>Cera de Abeja</h3>
+                    <p class="descripcion">Cera virgen limpia, ideal para proyectos cosméticos, moldes o uso apícola.</p>
+                </div>
+                <div>
+                    <div class="selector-medida">
+                        <label>Selecciona el tamaño:</label>
+                        <div class="opciones-radio">
+                            <label><input type="radio" name="tamano-cera" value="250g" checked onclick="actualizarPrecio('cera', 20)"> 250g</label>
+                            <label><input type="radio" name="tamano-cera" value="500g" onclick="actualizarPrecio('cera', 'Por consultar')"> 500g</label>
+                        </div>
+                    </div>
+                    <div class="precio-display" id="precio-cera">S/. 20.00</div>
+                    <button class="btn-whatsapp" onclick="enviarPedido('Cera de Abeja', 'tamano-cera', 'precio-cera')">
+                        📱 Pedir por WhatsApp
+                    </button>
+                </div>
+            </div>
+
+            <!-- PRODUCTO 3: VELAS -->
+            <div class="card-item">
+                <div>
+                    <div class="icono-prod">🕯️</div>
+                    <h3>Velas de Cera de Abeja</h3>
+                    <p class="descripcion">Velas artesanales hechas a mano. Al encenderlas purifican el aire y dejan un aroma dulce natural.</p>
+                </div>
+                <div>
+                    <div class="selector-medida">
+                        <label>Selecciona la presentación:</label>
+                        <div class="opciones-radio">
+                            <label><input type="radio" name="tamano-velas" value="Unidad" checked onclick="actualizarPrecio('velas', 'Por consultar')"> Unidad</label>
+                            <label><input type="radio" name="tamano-velas" value="Pack" onclick="actualizarPrecio('velas', 'Por consultar')"> Pack</label>
+                        </div>
+                    </div>
+                    <div class="precio-display" id="precio-velas">Por consultar</div>
+                    <button class="btn-whatsapp" onclick="enviarPedido('Velas de Cera de Abeja', 'tamano-velas', 'precio-velas')">
+                        📱 Pedir por WhatsApp
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function actualizarPrecio(producto, valor) {
+            const el = document.getElementById('precio-' + producto);
+            if (typeof valor === 'number') {
+                el.innerText = `S/. ${valor}.00`;
+            } else {
+                el.innerText = valor;
+            }
+        }
+
+        function enviarPedido(producto, nombreRadio, idPrecio) {
+            // Recuerda cambiar este número por tu celular real de ventas
+            const numeroTelefono = "51999999999"; 
+            
+            const opciones = document.getElementsByName(nombreRadio);
+            let tamanoSeleccionado = "250g";
+            
+            for (let i = 0; i < opciones.length; i++) {
+                if (opciones[i].checked) {
+                    tamanoSeleccionado = opciones[i].value;
+                    break;
+                }
+            }
+            
+            const textoPrecio = document.getElementById(idPrecio).innerText;
+            let detallePrecio = `con un costo de ${textoPrecio}`;
+            if(textoPrecio === "Por consultar") {
+                detallePrecio = "para consultar el precio";
+            }
+            
+            const mensaje = `Hola Factor Api, me interesa comprar el producto: ${producto} en la presentación de ${tamanoSeleccionado} ${detallePrecio}.`;
+            const mensajeCodificado = encodeURIComponent(mensaje);
+            
+            const enlaceWhatsApp = `https://wa.me{numeroTelefono}?text=${mensajeCodificado}`;
+            window.open(enlaceWhatsApp, '_blank');
+        }
+    </script>
+
+</body>
+</html>
