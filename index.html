@@ -3,267 +3,327 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Factor Api - Catálogo Oficial</title>
+    <title>Factor Api - Miel Pura de Abeja</title>
+    
+    <!-- Estilos CSS Integrados -->
     <style>
-        :root {
-            --amarillo-miel: #ffb300;
-            --marron-oscuro: #2b1810;
-            --crema-fondo: #fdfaf6;
-            --verde-whatsapp: #25d366;
+        /* Estilos Generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--crema-fondo);
-            color: var(--marron-oscuro);
-        }
-
-        header {
-            background-color: var(--amarillo-miel);
-            text-align: center;
-            padding: 30px 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.2rem;
+            color: #333;
+            line-height: 1.6;
+            background-color: #fff;
         }
 
         .container {
-            max-width: 1100px;
-            margin: 30px auto;
-            padding: 0 15px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .grid-catalogo {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .card-item {
-            background: #fff;
-            border: 1px solid #ebdccb;
-            border-radius: 12px;
-            width: calc(33.333% - 14px);
-            min-width: 280px;
-            box-sizing: border-box;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        @media (max-width: 900px) {
-            .card-item {
-                width: calc(50% - 10px);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .card-item {
-                width: 100%;
-            }
-        }
-
-        .icono-prod {
-            font-size: 3rem;
+        .section-padding {
+            padding: 60px 0;
             text-align: center;
+        }
+
+        .bg-light {
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #d48806;
+        }
+
+        /* Barra de Navegación */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #d48806;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #d48806;
+        }
+
+        /* Botón de GitHub en navegación */
+        .nav-github {
+            background-color: #24292e;
+            color: #fff !important;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .nav-github:hover {
+            background-color: #444d56;
+            color: #fff !important;
+        }
+
+        /* Sección Hero / Inicio */
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://unsplash.com') no-repeat center center/cover;
+            height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
             margin-bottom: 10px;
         }
 
-        .card-item h3 {
-            margin: 10px 0 5px 0;
-            font-size: 1.4rem;
-            text-align: center;
-        }
-
-        .descripcion {
-            font-size: 0.95rem;
-            color: #6d5c56;
-            text-align: center;
-            margin-bottom: 15px;
-            line-height: 1.4;
-        }
-
-        .selector-medida {
+        .hero-content p {
+            font-size: 1.2rem;
             margin-bottom: 20px;
         }
 
-        .selector-medida label {
-            display: block;
-            font-weight: bold;
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-            text-align: center;
-        }
-
-        .opciones-radio {
-            display: flex;
-            justify-content: space-around;
-            background: #f5ece1;
-            padding: 8px;
-            border-radius: 8px;
-        }
-
-        .opciones-radio label {
-            margin: 0;
-            cursor: pointer;
-            font-weight: normal;
-        }
-
-        .precio-display {
-            text-align: center;
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #d35400;
-            margin-bottom: 15px;
-        }
-
-        .btn-whatsapp {
-            background-color: var(--verde-whatsapp);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background 0.3s;
+        .btn-primary {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #d48806;
+            color: #fff;
             text-decoration: none;
-            box-sizing: border-box;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #b87404;
+        }
+
+        /* Catálogo de Productos (Diseño Multi-Columna Adaptativo) */
+        .catalog-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .product-card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 12px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-info {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .product-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #222;
+        }
+
+        .description {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .price {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #d48806;
+            margin-bottom: 20px;
+        }
+
+        /* Botón de WhatsApp */
+        .btn-whatsapp {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #25D366;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background 0.3s;
+            text-align: center;
         }
 
         .btn-whatsapp:hover {
-            background-color: #20ba56;
+            background-color: #1ebd58;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #222;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+
+        footer p {
+            margin-bottom: 5px;
+        }
+
+        /* Ajustes Responsivos para Pantallas Pequeñas */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            nav ul li {
+                margin: 0;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .catalog-grid {
+                justify-content: space-evenly;
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- Navegación -->
     <header>
-        <h1>🍯 Factor Api</h1>
-        <p>Catálogo de Productos Apícolas</p>
+        <div class="nav-container">
+            <div class="logo">Factor Api</div>
+            <nav>
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#historia">Nuestra Historia</a></li>
+                    <li><a href="#catalogo">Catálogo</a></li>
+                    <!-- Reemplaza este enlace por la URL real de tu repositorio de GitHub -->
+                    <li><a href="https://github.com" target="_blank" class="nav-github">GitHub 💻</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-    <div class="container">
-        <div class="grid-catalogo">
-
-            <!-- PRODUCTO 1: MIEL -->
-            <div class="card-item">
-                <div>
-                    <div class="icono-prod">🍯</div>
-                    <h3>Miel de Abeja Pura</h3>
-                    <p class="descripcion">Miel de excelente calidad, cosechada de manera artesanal y 100% natural.</p>
-                </div>
-                <div>
-                    <div class="selector-medida">
-                        <label>Selecciona el tamaño:</label>
-                        <div class="opciones-radio">
-                            <label><input type="radio" name="tamano-miel" value="250g" checked onclick="actualizarPrecio('miel', 20)"> 250g</label>
-                            <label><input type="radio" name="tamano-miel" value="500g" onclick="actualizarPrecio('miel', 40)"> 500g</label>
-                        </div>
-                    </div>
-                    <div class="precio-display" id="precio-miel">S/. 20.00</div>
-                    <button class="btn-whatsapp" onclick="enviarPedido('Miel de Abeja Pura', 'tamano-miel', 'precio-miel')">
-                        📱 Pedir por WhatsApp
-                    </button>
-                </div>
-            </div>
-
-            <!-- PRODUCTO 2: CERA -->
-            <div class="card-item">
-                <div>
-                    <div class="icono-prod">🐝</div>
-                    <h3>Cera de Abeja</h3>
-                    <p class="descripcion">Cera virgen limpia, ideal para proyectos cosméticos, moldes o uso apícola.</p>
-                </div>
-                <div>
-                    <div class="selector-medida">
-                        <label>Selecciona el tamaño:</label>
-                        <div class="opciones-radio">
-                            <label><input type="radio" name="tamano-cera" value="250g" checked onclick="actualizarPrecio('cera', 20)"> 250g</label>
-                            <label><input type="radio" name="tamano-cera" value="500g" onclick="actualizarPrecio('cera', 40)"> 500g</label>
-                        </div>
-                    </div>
-                    <div class="precio-display" id="precio-cera">S/. 20.00</div>
-                    <button class="btn-whatsapp" onclick="enviarPedido('Cera de Abeja', 'tamano-cera', 'precio-cera')">
-                        📱 Pedir por WhatsApp
-                    </button>
-                </div>
-            </div>
-
-            <!-- PRODUCTO 3: VELAS -->
-            <div class="card-item">
-                <div>
-                    <div class="icono-prod">🕯️</div>
-                    <h3>Velas de Cera de Abeja</h3>
-                    <p class="descripcion">Velas artesanales hechas a mano. Al encenderlas purifican el aire y dejan un aroma dulce natural.</p>
-                </div>
-                <div>
-                    <div class="selector-medida">
-                        <label>Selecciona la presentación:</label>
-                        <div class="opciones-radio">
-                            <label><input type="radio" name="tamano-velas" value="Unidad" checked onclick="actualizarPrecio('velas', 'Por consultar')"> Unidad</label>
-                            <label><input type="radio" name="tamano-velas" value="Pack" onclick="actualizarPrecio('velas', 'Por consultar')"> Pack</label>
-                        </div>
-                    </div>
-                    <div class="precio-display" id="precio-velas">Por consultar</div>
-                    <button class="btn-whatsapp" onclick="enviarPedido('Velas de Cera de Abeja', 'tamano-velas', 'precio-velas')">
-                        📱 Pedir por WhatsApp
-                    </button>
-                </div>
-            </div>
-
+    <!-- Sección Inicio -->
+    <section id="inicio" class="hero-section">
+        <div class="hero-content">
+            <h1>Miel Pura y Natural</h1>
+            <p>Directo del apiario a tu mesa. Descubre la calidad de Factor Api.</p>
+            <a href="#catalogo" class="btn-primary">Ver Productos</a>
         </div>
-    </div>
+    </section>
 
-    <script>
-        function actualizarPrecio(producto, valor) {
-            const el = document.getElementById('precio-' + producto);
-            if (typeof valor === 'number') {
-                el.innerText = `S/. ${valor}.00`;
-            } else {
-                el.innerText = valor;
-            }
-        }
+    <!-- Sección Historia -->
+    <section id="historia" class="section-padding">
+        <div class="container">
+            <h2>Nuestra Historia</h2>
+            <p>Factor Api nace de una profunda tradición familiar y del amor por la apicultura. Inspirados por el legado y el conocimiento transmitido de generación en generación, nos dedicamos a la crianza cuidadosa de nuestras abejas y a la recolección responsable de una miel 100% pura, natural y multifloral. Nuestro compromiso es mantener procesos artesanales que respeten la biodiversidad y aseguren la máxima calidad en cada gota.</p>
+        </div>
+    </section>
 
-        function enviarPedido(producto, nombreRadio, idPrecio) {
-            const numeroTelefono = "51941983088"; 
-            
-            const opciones = document.getElementsByName(nombreRadio);
-            let tamanoSeleccionado = "250g";
-            
-            for (let i = 0; i < opciones.length; i++) {
-                if (opciones[i].checked) {
-                    tamanoSeleccionado = opciones[i].value;
-                    break;
-                }
-            }
-            
-            const textoPrecio = document.getElementById(idPrecio).innerText;
-            let detallePrecio = `con un costo de ${textoPrecio}`;
-            if(textoPrecio === "Por consultar") {
-                detallePrecio = "para consultar el precio";
-            }
-            
-            const mensaje = `Hola Factor Api, me interesa comprar el producto: ${producto} en la presentación de ${tamanoSeleccionado} ${detallePrecio}.`;
-            const mensajeCodificado = encodeURIComponent(mensaje);
-            
-            const enlaceWhatsApp = `https://whatsapp.com{numeroTelefono}&text=${mensajeCodificado}`;
-            window.open(enlaceWhatsApp, '_blank');
-        }
-    </script>
+    <!-- Sección Catálogo -->
+    <section id="catalogo" class="section-padding bg-light">
+        <div class="container">
+            <h2>Nuestro Catálogo</h2>
+            <div class="catalog-grid">
+                
+                <!-- Tarjeta Presentación 250g -->
+                <div class="product-card">
+                    <div class="product-info">
+                        <h3>Miel Pura de Abeja - 250g</h3>
+                        <p class="description">Presentación ideal para consumo personal o degustación. Miel cruda de excelente pureza.</p>
+                        <p class="price">S/ 20.00</p>
+                        <!-- Reemplaza el número 51900000000 por tu número real de WhatsApp -->
+                        <a href="https://wa.me" class="btn-whatsapp" target="_blank">
+                            Pedir por WhatsApp
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Presentación 500g -->
+                <div class="product-card">
+                    <div class="product-info">
+                        <h3>Miel Pura de Abeja - 500g</h3>
+                        <p class="description">Perfecta para el hogar. Rinde más y conserva todas las propiedades medicinales y nutricionales.</p>
+                        <p class="price">Consultar Precio</p>
+                        <!-- Reemplaza el número 51900000000 por tu número real de WhatsApp -->
+                        <a href="https://wa.me" class="btn-whatsapp" target="_blank">
+                            Pedir por WhatsApp
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Factor Api. Todos los derechos reservados.</p>
+        <!-- Enlace secundario en el footer para fácil acceso técnico -->
+        <p><a href="https://github.com" target="_blank" style="color: #bbb; text-decoration: none; font-size: 0.8rem;">Ver código en GitHub</a></p>
+    </footer>
 
 </body>
 </html>
