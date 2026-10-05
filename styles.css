@@ -5,9 +5,9 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 body {
-    color: #333;
+    color: #4a3319; /* Marrón oscuro para mejor contraste apícola */
     line-height: 1.6;
-    background-color: #fff;
+    background-color: #fdfaf2; /* Color crema suave de fondo */
     scroll-behavior: smooth;
 }
 .container {
@@ -19,13 +19,13 @@ body {
     padding: 80px 0;
     text-align: center;
 }
-.bg-light {
-    background-color: #f9f9f9;
+.bg-honey-light {
+    background-color: #fbf4e2; /* Fondo de catálogo en tono cera suave */
 }
 h2 {
     font-size: 2.5rem;
     margin-bottom: 20px;
-    color: #d48806;
+    color: #d48806; /* Oro/Ámbar de la miel */
     position: relative;
     padding-bottom: 10px;
 }
@@ -40,8 +40,8 @@ h2::after {
     background-color: #d48806;
 }
 header {
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: #fff9e6; /* Fondo del menú tono polen claro */
+    box-shadow: 0 2px 5px rgba(139, 92, 26, 0.15);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -70,26 +70,15 @@ nav ul li {
 }
 nav ul li a {
     text-decoration: none;
-    color: #555;
+    color: #5c401f;
     font-weight: 600;
     transition: color 0.3s;
 }
 nav ul li a:hover {
     color: #d48806;
 }
-.nav-github {
-    background-color: #24292e;
-    color: #fff !important;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-}
-.nav-github:hover {
-    background-color: #444d56;
-    color: #fff !important;
-}
 .hero-section {
-    background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('https://unsplash.com') no-repeat center center/cover;
+    background: linear-gradient(rgba(42, 29, 14, 0.6), rgba(42, 29, 14, 0.6)), url('https://unsplash.com') no-repeat center center/cover;
     height: 85vh;
     display: flex;
     justify-content: center;
@@ -103,6 +92,7 @@ nav ul li a:hover {
     margin-bottom: 15px;
     font-weight: 800;
     letter-spacing: 1px;
+    color: #fffbfa;
 }
 .hero-content p {
     font-size: 1.3rem;
@@ -131,7 +121,7 @@ nav ul li a:hover {
     max-width: 800px;
     margin: 30px auto 0 auto;
     font-size: 1.15rem;
-    color: #555;
+    color: #5c401f;
     line-height: 1.8;
     text-align: justify;
 }
@@ -144,20 +134,21 @@ nav ul li a:hover {
     align-items: stretch;
 }
 .product-card {
-    background: #fff;
-    border: 1px solid #e8e8e8;
+    background: #fffefb; /* Blanco cálido */
+    border: 1px solid #f3e5c8; /* Borde color panal blando */
     border-radius: 16px;
     overflow: hidden;
     width: 100%;
     max-width: 360px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 6px 12px rgba(92, 64, 31, 0.05);
     transition: transform 0.3s, box-shadow 0.3s;
     display: flex;
     flex-direction: column;
 }
 .product-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 12px 20px rgba(212, 136, 6, 0.15);
+    border-color: #d48806;
 }
 .product-info {
     padding: 30px;
@@ -168,11 +159,11 @@ nav ul li a:hover {
 .product-info h3 {
     font-size: 1.5rem;
     margin-bottom: 12px;
-    color: #222;
+    color: #4a3319;
 }
 .description {
     font-size: 1rem;
-    color: #666;
+    color: #72522f;
     margin-bottom: 20px;
     flex-grow: 1;
 }
@@ -203,15 +194,12 @@ nav ul li a:hover {
     transform: translateY(-2px);
 }
 footer {
-    background-color: #1a1a1a;
-    color: #fff;
+    background-color: #2a1d0e; /* Marrón colmena muy oscuro */
+    color: #fdfaf2;
     text-align: center;
-    padding: 30px 0;
+    padding: 35px 0;
     margin-top: 60px;
     font-size: 0.95rem;
-}
-footer p {
-    margin-bottom: 8px;
 }
 @media (max-width: 768px) {
     .nav-container {
