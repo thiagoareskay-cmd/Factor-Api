@@ -4,313 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Factor Api - Miel Pura de Abeja</title>
-    
-    <!-- Estilos CSS Integrados -->
-    <style>
-        /* Estilos Generales */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            color: #333;
-            line-height: 1.6;
-            background-color: #fff;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-padding {
-            padding: 60px 0;
-            text-align: center;
-        }
-
-        .bg-light {
-            background-color: #f9f9f9;
-        }
-
-        h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #d48806;
-        }
-
-        /* Barra de Navegación */
-        header {
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 5%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #d48806;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            align-items: center;
-        }
-
-        nav ul li {
-            margin-left: 20px;
-        }
-
-        nav ul li a {
-            text-decoration: none;
-            color: #555;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-
-        nav ul li a:hover {
-            color: #d48806;
-        }
-
-        /* Botón de GitHub en navegación */
-        .nav-github {
-            background-color: #24292e;
-            color: #fff !important;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-        }
-
-        .nav-github:hover {
-            background-color: #444d56;
-            color: #fff !important;
-        }
-
-        /* Sección Hero / Inicio */
-        .hero-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://unsplash.com') no-repeat center center/cover;
-            height: 70vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: #fff;
-        }
-
-        .hero-content h1 {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-        }
-
-        .hero-content p {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
-
-        .btn-primary {
-            display: inline-block;
-            padding: 12px 30px;
-            background-color: #d48806;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        .btn-primary:hover {
-            background-color: #b87404;
-        }
-
-        /* Catálogo de Productos (Diseño Multi-Columna Adaptativo) */
-        .catalog-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            justify-content: center;
-            margin-top: 40px;
-        }
-
-        .product-card {
-            background: #fff;
-            border: 1px solid #e8e8e8;
-            border-radius: 12px;
-            overflow: hidden;
-            width: 100%;
-            max-width: 350px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .product-info {
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            justify-content: space-between;
-        }
-
-        .product-info h3 {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-            color: #222;
-        }
-
-        .description {
-            font-size: 0.95rem;
-            color: #666;
-            margin-bottom: 15px;
-            flex-grow: 1;
-        }
-
-        .price {
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: #d48806;
-            margin-bottom: 20px;
-        }
-
-        /* Botón de WhatsApp */
-        .btn-whatsapp {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #25D366;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: background 0.3s;
-            text-align: center;
-        }
-
-        .btn-whatsapp:hover {
-            background-color: #1ebd58;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #222;
-            color: #fff;
-            text-align: center;
-            padding: 20px 0;
-            margin-top: 40px;
-            font-size: 0.9rem;
-        }
-
-        footer p {
-            margin-bottom: 5px;
-        }
-
-        /* Ajustes Responsivos para Pantallas Pequeñas */
-        @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            nav ul {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            nav ul li {
-                margin: 0;
-            }
-
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-            
-            .catalog-grid {
-                justify-content: space-evenly;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <!-- Navegación -->
     <header>
         <div class="nav-container">
-            <div class="logo">Factor Api</div>
+            <a href="#inicio" class="logo">Factor Api</a>
             <nav>
                 <ul>
                     <li><a href="#inicio">Inicio</a></li>
                     <li><a href="#historia">Nuestra Historia</a></li>
                     <li><a href="#catalogo">Catálogo</a></li>
-                    <!-- Reemplaza este enlace por la URL real de tu repositorio de GitHub -->
                     <li><a href="https://github.com" target="_blank" class="nav-github">GitHub 💻</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!-- Sección Inicio -->
     <section id="inicio" class="hero-section">
         <div class="hero-content">
             <h1>Miel Pura y Natural</h1>
-            <p>Directo del apiario a tu mesa. Descubre la calidad de Factor Api.</p>
+            <p>Directo del apiario a tu mesa. Descubre la calidad premium y el sabor auténtico de Factor Api.</p>
             <a href="#catalogo" class="btn-primary">Ver Productos</a>
         </div>
     </section>
 
-    <!-- Sección Historia -->
     <section id="historia" class="section-padding">
         <div class="container">
             <h2>Nuestra Historia</h2>
-            <p>Factor Api nace de una profunda tradición familiar y del amor por la apicultura. Inspirados por el legado y el conocimiento transmitido de generación en generación, nos dedicamos a la crianza cuidadosa de nuestras abejas y a la recolección responsable de una miel 100% pura, natural y multifloral. Nuestro compromiso es mantener procesos artesanales que respeten la biodiversidad y aseguren la máxima calidad en cada gota.</p>
+            <p class="history-text">
+                Factor Api nace de una profunda tradición familiar y de un amor incondicional por la apicultura. Inspirados por el legado y el conocimiento transmitido de generación en generación, nos dedicamos a la crianza cuidadosa de nuestras abejas y a la recolección responsable de una miel 100% pura, natural y multifloral. Nuestro compromiso se centra en mantener procesos estrictamente artesanales que respeten la biodiversidad del entorno, garantizando que cada gota conserve intactas todas sus propiedades medicinales, nutricionales y su exquisito sabor original.
+            </p>
         </div>
     </section>
 
-    <!-- Sección Catálogo -->
     <section id="catalogo" class="section-padding bg-light">
         <div class="container">
             <h2>Nuestro Catálogo</h2>
             <div class="catalog-grid">
                 
-                <!-- Tarjeta Presentación 250g -->
                 <div class="product-card">
                     <div class="product-info">
                         <h3>Miel Pura de Abeja - 250g</h3>
-                        <p class="description">Presentación ideal para consumo personal o degustación. Miel cruda de excelente pureza.</p>
+                        <p class="description">Presentación ideal para consumo personal o degustación. Miel cruda cosechada con la máxima pureza y delicadeza.</p>
                         <p class="price">S/ 20.00</p>
-                        <!-- Reemplaza el número 51900000000 por tu número real de WhatsApp -->
                         <a href="https://wa.me" class="btn-whatsapp" target="_blank">
-                            Pedir por WhatsApp
+                            Pedir por WhatsApp 📱
                         </a>
                     </div>
                 </div>
 
-                <!-- Tarjeta Presentación 500g -->
                 <div class="product-card">
                     <div class="product-info">
                         <h3>Miel Pura de Abeja - 500g</h3>
-                        <p class="description">Perfecta para el hogar. Rinde más y conserva todas las propiedades medicinales y nutricionales.</p>
+                        <p class="description">La medida perfecta para el hogar. Rinde más para toda la familia y rinde tributo a tu nutrición diaria.</p>
                         <p class="price">Consultar Precio</p>
-                        <!-- Reemplaza el número 51900000000 por tu número real de WhatsApp -->
                         <a href="https://wa.me" class="btn-whatsapp" target="_blank">
-                            Pedir por WhatsApp
+                            Pedir por WhatsApp 📱
                         </a>
                     </div>
                 </div>
@@ -320,9 +71,10 @@
     </section>
 
     <footer>
-        <p>&copy; 2026 Factor Api. Todos los derechos reservados.</p>
-        <!-- Enlace secundario en el footer para fácil acceso técnico -->
-        <p><a href="https://github.com" target="_blank" style="color: #bbb; text-decoration: none; font-size: 0.8rem;">Ver código en GitHub</a></p>
+        <div class="container">
+            <p>&copy; 2026 Factor Api. Todos los derechos reservados.</p>
+            <p><a href="https://github.com" target="_blank" style="color: #bbb; text-decoration: none; font-size: 0.85rem;">Ver código en GitHub</a></p>
+        </div>
     </footer>
 
 </body>
