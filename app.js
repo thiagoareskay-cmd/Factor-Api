@@ -243,7 +243,9 @@ function setupPrizeWheel() {
   button.addEventListener('click', () => {
     if (button.disabled) return;
     button.disabled = true; button.textContent = 'Girando…';
-    const prize = prizes[Math.floor(Math.random() * prizes.length)];
+    // El premio final es siempre el cupón del 10%, tal como anuncia la promoción.
+    // La ruleta sigue mostrando todos los segmentos y realiza una animación completa.
+    const prize = prizes.find(item => item.coupon === 'API10');
     const extraTurns = 5 + Math.floor(Math.random() * 3);
     const finalAngle = extraTurns * 360 + prize.angle;
     wheel.style.transform = `rotate(${finalAngle}deg)`;
