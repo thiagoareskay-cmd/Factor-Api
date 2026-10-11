@@ -326,3 +326,13 @@ button { cursor: pointer; }
 .cart-btn .cart-count { top:-5px; right:-5px; min-width:20px; height:20px; padding:0 5px; display:grid; place-items:center; border-radius:999px; background:#e8ad17; color:#352600; border:2px solid #fffdf4; font-size:11px; font-weight:900; line-height:1; }
 .active-cart { background:#fff0b6; }
 @media(prefers-reduced-motion:reduce) { .cart-btn { transition:none; } }
+
+
+/* Banner apícola de la página Proceso */
+.process-bee-banner { min-height:270px; display:flex; align-items:center; background-position:center 54%; }
+.process-bee-banner::after { background:linear-gradient(90deg,rgba(28,22,5,.82),rgba(28,22,5,.43) 58%,rgba(28,22,5,.12)); }
+.process-bee-banner .promo-content { max-width:510px; }
+.process-bee-banner .promo-content p { color:rgba(255,255,255,.9); }
+.process-bee { position:absolute; z-index:1; right:clamp(18px,5vw,64px); bottom:18px; width:clamp(90px,14vw,160px); height:auto; object-fit:contain; filter:drop-shadow(0 8px 14px rgba(0,0,0,.24)); animation:beeBuzz 3.2s ease-in-out infinite; }
+@media(max-width:620px) { .process-bee-banner { padding-bottom:112px; } .process-bee { width:90px; right:18px; bottom:12px; } .process-bee-banner .promo-content { max-width:100%; } }
+@media(prefers-reduced-motion:reduce) { .process-bee { animation:none; } }
