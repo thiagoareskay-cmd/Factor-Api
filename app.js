@@ -11,6 +11,8 @@ const PRODUCTS = [
 
 const CART_KEY = 'factorApiCart';
 const COUPON_KEY = 'factorApiPrizeCoupon';
+const WHEEL_SPUN_KEY = 'factorApiWheelSpunEver';
+const WHEEL_PRIZE_KEY = 'factorApiWheelPrizeEver';
 const money = n => `S/ ${Number(n).toFixed(2)}`;
 const getCart = () => JSON.parse(localStorage.getItem(CART_KEY) || '[]');
 const saveCart = cart => localStorage.setItem(CART_KEY, JSON.stringify(cart));
@@ -94,7 +96,7 @@ function renderCart() {
   summary.innerHTML = `<h3>🛒 Resumen del pedido</h3>
     <div class="summary-row"><span>Subtotal</span><strong>${money(subtotal)}</strong></div>
     ${coupon ? `<div class="coupon-applied">🎟️ Cupón ${coupon} aplicado</div>` : `<div class="coupon-hint">🎁 ¿Quieres un descuento? <a href="index.html#ruleta">Gira la ruleta</a></div>`}
-    ${discount ? `<div class="summary-row discount-row"><span>Descuento 10%</span><strong>−${money(discount)}</strong></div>` : ''}
+    ${discount ? `<div class="summary-row discount-row"><span>Descuento ${Math.round(discountRate * 100)}%</span><strong>−${money(discount)}</strong></div>` : ''}
     <div class="summary-row"><span>Envío</span><strong>${shipping === 0 ? 'Gratis' : money(shipping)}</strong></div>
     <div class="summary-total"><span>Total</span><span>${money(subtotal - discount + shipping)}</span></div>
     <button class="primary-btn" style="width:100%;margin-top:18px" onclick="completeOrder()">Finalizar pedido</button>
@@ -111,7 +113,7 @@ function completeOrder() {
   const discount = subtotal * discountRate;
   const shipping = subtotal >= 80 || coupon === 'ENVIO' ? 0 : 7;
   const total = subtotal - discount + shipping;
-  const couponLine = coupon ? `%0ACupón: ${encodeURIComponent(coupon)}%0ADescuento: ${encodeURIComponent(money(discount))}` : '';
+  const couponLine = coupon ? `%0ACupón: ${encodeURIComponent(coupon)}%0ADescuento (${Math.round(discountRate * 100)}%): ${encodeURIComponent(money(discount))}` : '';
   const phone = '51941983088'; // REEMPLAZA POR EL WHATSAPP REAL DEL NEGOCIO
   const url = `https://wa.me/${phone}?text=Hola%20FACTOR%20API,%20quiero%20hacer%20este%20pedido:%0A${text}%0A%0ASubtotal:%20${encodeURIComponent(money(subtotal))}${couponLine}%0AEnvío:%20${encodeURIComponent(shipping === 0 ? 'Gratis' : money(shipping))}%0ATotal%20estimado:%20${encodeURIComponent(money(total))}`;
   localStorage.removeItem(CART_KEY); localStorage.removeItem(COUPON_KEY); cartCount();
@@ -233,9 +235,9 @@ function setupPrizeWheel() {
     { label: 'Envío gratis', coupon: 'ENVIO', angle: 135 },
     { label: '8% de descuento', coupon: 'API8', angle: 45 }
   ];
-  const alreadySpun = sessionStorage.getItem('factorApiWheelSpun') === 'yes';
+  const alreadySpun = localStorage.getItem(WHEEL_SPUN_KEY) === 'yes';
   if (alreadySpun) {
-    const saved = sessionStorage.getItem('factorApiWheelPrize') || '';
+    const saved = localStorage.getItem(WHEEL_PRIZE_KEY) || '';
     result.textContent = saved ? `Tu premio de esta visita: ${saved}` : 'Ya giraste la ruleta en esta visita. ¡Guarda tu premio!';
     button.disabled = true; button.textContent = 'Ya giraste';
     return;
@@ -243,9 +245,8 @@ function setupPrizeWheel() {
   button.addEventListener('click', () => {
     if (button.disabled) return;
     button.disabled = true; button.textContent = 'Girando…';
-    // El premio final es siempre el cupón del 10%, tal como anuncia la promoción.
-    // La ruleta sigue mostrando todos los segmentos y realiza una animación completa.
-    const prize = prizes.find(item => item.coupon === 'API10');
+    // El premio se elige al azar y coincide con el segmento donde termina la ruleta.
+    const prize = prizes[Math.floor(Math.random() * prizes.length)];
     const extraTurns = 5 + Math.floor(Math.random() * 3);
     const finalAngle = extraTurns * 360 + prize.angle;
     wheel.style.transform = `rotate(${finalAngle}deg)`;
@@ -253,8 +254,8 @@ function setupPrizeWheel() {
     window.setTimeout(() => {
       wheel.classList.remove('is-spinning');
       localStorage.setItem(COUPON_KEY, prize.coupon);
-      sessionStorage.setItem('factorApiWheelSpun', 'yes');
-      sessionStorage.setItem('factorApiWheelPrize', prize.label);
+      localStorage.setItem(WHEEL_SPUN_KEY, 'yes');
+      localStorage.setItem(WHEEL_PRIZE_KEY, prize.label);
       result.innerHTML = `🎉 ¡Ganaste <strong>${prize.label}</strong>! ${prize.coupon === 'ENVIO' ? 'El envío gratis se aplicará en el carrito.' : `El cupón ${prize.coupon} se aplicará en el carrito.`}`;
       button.textContent = 'Premio conseguido';
       toast('¡Premio de la ruleta!', prize.label);
@@ -262,7 +263,34 @@ function setupPrizeWheel() {
   });
 }
 
+function createWheelPopup() {
+  // La ruleta aparece al entrar al sitio, independientemente de la página de entrada.
+  if (sessionStorage.getItem('factorApiWheelPopupSeen') === 'yes') return;
+  if (localStorage.getItem(WHEEL_SPUN_KEY) === 'yes') return;
+  const popup = document.createElement('div');
+  popup.id = 'wheel-popup';
+  popup.className = 'wheel-popup';
+  popup.setAttribute('role', 'dialog');
+  popup.setAttribute('aria-modal', 'true');
+  popup.setAttribute('aria-labelledby', 'wheel-popup-title');
+  popup.innerHTML = `
+    <div class="wheel-popup-backdrop" data-close-wheel></div>
+    <section class="wheel-popup-card glass">
+      <button class="wheel-popup-close" type="button" aria-label="Cerrar ruleta" data-close-wheel>×</button>
+      <div class="wheel-copy-popup"><span class="eyebrow">🎁 Un regalo de la colmena</span><h2 id="wheel-popup-title">¡Gira la ruleta de FACTOR API!</h2><p>Prueba tu suerte y descubre tu premio para la próxima compra. Entre las opciones está el cupón de <strong>10% de descuento</strong>.</p><div id="wheel-result" class="wheel-result" aria-live="polite">Tu premio aparecerá aquí 🍯</div><a href="tienda.html" class="secondary-btn wheel-shop-link">Ver productos</a></div>
+      <div class="wheel-play glass"><div class="wheel-pointer" aria-hidden="true">▼</div><div id="prize-wheel" class="prize-wheel" role="img" aria-label="Ruleta de premios: 5% de descuento, 10% de descuento, envío gratis y 8% de descuento"><span class="wheel-label label-1">5% OFF</span><span class="wheel-label label-2">10% OFF</span><span class="wheel-label label-3">Envío gratis</span><span class="wheel-label label-4">8% OFF</span><span class="wheel-center">🐝</span></div><button id="spin-wheel" class="primary-btn spin-btn" type="button">Girar</button><p class="wheel-note">Un giro por navegador. Tu premio se guarda y se aplica en el carrito.</p></div>
+    </section>`;
+  document.body.appendChild(popup);
+  document.body.classList.add('wheel-popup-open');
+  const close = () => { popup.classList.add('closing'); document.body.classList.remove('wheel-popup-open'); sessionStorage.setItem('factorApiWheelPopupSeen','yes'); window.setTimeout(()=>popup.remove(),180); };
+  popup.querySelectorAll('[data-close-wheel]').forEach(el => el.addEventListener('click', close));
+  const shopLink = popup.querySelector('.wheel-shop-link');
+  if (shopLink) shopLink.addEventListener('click', () => sessionStorage.setItem('factorApiWheelPopupSeen','yes'));
+  document.addEventListener('keydown', function escClose(e) { if (e.key === 'Escape' && document.getElementById('wheel-popup')) { close(); document.removeEventListener('keydown', escClose); } });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  cartCount(); setupStore(); setupProduct(); renderCart(); setupPrizeWheel();
+  cartCount(); setupStore(); setupProduct(); renderCart();
+  createWheelPopup(); setupPrizeWheel();
   const year = document.querySelector('#year'); if (year) year.textContent = new Date().getFullYear();
 });
