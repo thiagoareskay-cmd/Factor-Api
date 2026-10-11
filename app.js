@@ -10,13 +10,7 @@ const PRODUCTS = [
 ];
 
 const CART_KEY = 'factorApiCart';
-const DISCOUNT_KEY = 'factorApiDiscount';
-const CODES_KEY = 'factorApiCodes';
-const WHEEL_KEY = 'factorApiWelcomeWheelSeen';
-const DISCOUNTS = { API10:{percent:10,label:'Bienvenida 10%'}, API5:{percent:5,label:'Gracias 5%'}, APIREFERIDO:{percent:5,label:'Referido 5%'} };
-const getDiscount = () => { try { return JSON.parse(localStorage.getItem(DISCOUNT_KEY) || 'null'); } catch { return null; } };
-const getCodes = () => { try { return JSON.parse(localStorage.getItem(CODES_KEY) || '[]'); } catch { return []; } };
-const saveCodes = codes => localStorage.setItem(CODES_KEY, JSON.stringify([...new Set(codes)]));
+const COUPON_KEY = 'factorApiPrizeCoupon';
 const money = n => `S/ ${Number(n).toFixed(2)}`;
 const getCart = () => JSON.parse(localStorage.getItem(CART_KEY) || '[]');
 const saveCart = cart => localStorage.setItem(CART_KEY, JSON.stringify(cart));
@@ -93,15 +87,16 @@ function renderCart() {
       <div style="text-align:right"><strong>${money(total)}</strong><br><button style="border:0;background:none;color:#8a670b;margin-top:8px" onclick="removeFromCart('${p.id}')">Eliminar</button></div>
     </div>`;
   }).join('');
-  const shipping = subtotal >= 80 ? 0 : 7;
-  const discount = getDiscount();
-  const discountValue = discount && DISCOUNTS[discount.code] ? subtotal * DISCOUNTS[discount.code].percent / 100 : 0;
-  summary.innerHTML = `<h3>Resumen del pedido</h3>
+  const coupon = localStorage.getItem(COUPON_KEY) || '';
+  const discountRate = coupon === 'API10' ? 0.10 : coupon === 'API8' ? 0.08 : coupon === 'API5' ? 0.05 : 0;
+  const discount = subtotal * discountRate;
+  const shipping = subtotal >= 80 || coupon === 'ENVIO' ? 0 : 7;
+  summary.innerHTML = `<h3>🛒 Resumen del pedido</h3>
     <div class="summary-row"><span>Subtotal</span><strong>${money(subtotal)}</strong></div>
-    ${discountValue ? `<div class="summary-row"><span>Descuento (${discount.code})</span><strong>−${money(discountValue)}</strong></div>` : ''}
+    ${coupon ? `<div class="coupon-applied">🎟️ Cupón ${coupon} aplicado</div>` : `<div class="coupon-hint">🎁 ¿Quieres un descuento? <a href="index.html#ruleta">Gira la ruleta</a></div>`}
+    ${discount ? `<div class="summary-row discount-row"><span>Descuento 10%</span><strong>−${money(discount)}</strong></div>` : ''}
     <div class="summary-row"><span>Envío</span><strong>${shipping === 0 ? 'Gratis' : money(shipping)}</strong></div>
-    <div class="summary-total"><span>Total</span><span>${money(Math.max(0, subtotal - discountValue) + shipping)}</span></div>
-    ${discount ? `<p class="small-note">Código activo: ${discount.code}. Los códigos no son acumulables.</p><button class="secondary-btn" onclick="removeDiscountCode()" style="width:100%">Quitar código</button>` : ''}
+    <div class="summary-total"><span>Total</span><span>${money(subtotal - discount + shipping)}</span></div>
     <button class="primary-btn" style="width:100%;margin-top:18px" onclick="completeOrder()">Finalizar pedido</button>
     <p style="color:var(--muted);font-size:12px;margin-top:10px">También puedes enviar tu pedido por WhatsApp desde el botón de contacto.</p>`;
 }
@@ -111,14 +106,15 @@ function completeOrder() {
   if (!cart.length) return;
   const text = cart.map(i => { const p = productById(i.id); return `• ${p.name} ${p.size} x${i.qty} = ${money(p.price*i.qty)}`; }).join('%0A');
   const subtotal = cart.reduce((s,i) => s + productById(i.id).price*i.qty,0);
-  const discount = getDiscount();
-  const discountValue = discount && DISCOUNTS[discount.code] ? subtotal * DISCOUNTS[discount.code].percent / 100 : 0;
-  const shipping = subtotal >= 80 ? 0 : 7;
-  const total = Math.max(0, subtotal - discountValue) + shipping;
-  const discountLine = discountValue ? `%0ADescuento (${discount.code}): -${encodeURIComponent(money(discountValue))}` : '';
+  const coupon = localStorage.getItem(COUPON_KEY) || '';
+  const discountRate = coupon === 'API10' ? 0.10 : coupon === 'API8' ? 0.08 : coupon === 'API5' ? 0.05 : 0;
+  const discount = subtotal * discountRate;
+  const shipping = subtotal >= 80 || coupon === 'ENVIO' ? 0 : 7;
+  const total = subtotal - discount + shipping;
+  const couponLine = coupon ? `%0ACupón: ${encodeURIComponent(coupon)}%0ADescuento: ${encodeURIComponent(money(discount))}` : '';
   const phone = '51941983088'; // REEMPLAZA POR EL WHATSAPP REAL DEL NEGOCIO
-  const url = `https://wa.me/${phone}?text=Hola%20FACTOR%20API,%20quiero%20hacer%20este%20pedido:%0A${text}%0A${discountLine}%0AEnvío: ${encodeURIComponent(shipping === 0 ? 'Gratis' : money(shipping))}%0A%0ATotal%20estimado:%20${encodeURIComponent(money(total))}%0APago: Yape, Plin o transferencia (a coordinar).%0AEntrega: Trujillo por motorizado; Lima y provincias por Shalom (a coordinar).`;
-  localStorage.removeItem(CART_KEY); localStorage.removeItem(DISCOUNT_KEY); cartCount();
+  const url = `https://wa.me/${phone}?text=Hola%20FACTOR%20API,%20quiero%20hacer%20este%20pedido:%0A${text}%0A%0ASubtotal:%20${encodeURIComponent(money(subtotal))}${couponLine}%0AEnvío:%20${encodeURIComponent(shipping === 0 ? 'Gratis' : money(shipping))}%0ATotal%20estimado:%20${encodeURIComponent(money(total))}`;
+  localStorage.removeItem(CART_KEY); localStorage.removeItem(COUPON_KEY); cartCount();
   const overlay = document.querySelector('#celebrate');
   if (overlay) {
     overlay.classList.add('show');
@@ -156,8 +152,6 @@ function addSelectedVariant(baseId) {
 }
 
 function setupStore() {
-  const homeGrid = document.querySelector('#home-products');
-  if (homeGrid) homeGrid.innerHTML = PRODUCTS.filter(p => ['miel-250','polen-100','vela-lavanda','mini-api'].includes(p.id)).map(p => productCard(p)).join('');
   const grid = document.querySelector('#product-grid');
   if (!grid) return;
   const search = document.querySelector('#search');
@@ -179,28 +173,20 @@ function setupProduct() {
   if (!root) return;
   const id = new URLSearchParams(location.search).get('id') || PRODUCTS[0].id;
   const p = productById(id) || PRODUCTS[0];
-  const variants = PRODUCTS.filter(v => v.name === p.name);
-  let chosen = variants.find(v => v.id === p.id) || variants[0] || p, qty = 1;
-  const isHoneyOrPollen = ['Miel','Polen'].includes(p.category);
+  let selectedSize = p.size, qty = 1;
   root.innerHTML = `<div class="detail-image glass"><img src="${p.image}" alt="${p.name}" onerror="this.onerror=null;this.src='./assets/honey.jpg'"></div>
   <section class="detail-panel glass"><span class="tag" style="position:static;display:inline-block">${p.category}</span>
     <h1>${p.name}</h1><p style="color:var(--muted)">${p.description}</p>
-    <div class="detail-price" id="detail-price">${money(chosen.price)}</div>
+    <div class="detail-price">${money(p.price)}</div>
     <div class="stock ok">● Disponible para pedido · confirmar por WhatsApp</div>
-    <h4>Presentación</h4><div class="options">${variants.map((v,i)=>`<button class="option ${v.id===chosen.id?'active':''}" type="button" data-variant="${v.id}">${v.size}<br><small>${money(v.price)}</small></button>`).join('')}</div>
-    ${p.category==='Miel' ? `<div class="product-label-info"><strong>Información para la etiqueta</strong><p>Contenido neto: según presentación (${chosen.size}). Tipo de producto: miel de abeja. Fecha de envasado: indicada en el lote/etiqueta física al preparar el pedido.</p><p><strong>Perfil floral:</strong> puede variar según la temporada y la floración del apiario. Consulta por el lote disponible para conocer su origen confirmado.</p></div>` : `<div class="product-label-info"><strong>Información del producto</strong><p>Tipo: ${p.category}. Contenido/presentación: ${chosen.size}. Fecha de envasado: se consignará en la etiqueta física al preparar el pedido.</p></div>`}
+    <h4>Presentación</h4><div class="options"><button class="option active">${selectedSize}</button></div>
     <div class="qty-row"><div class="qty"><button id="minus">−</button><strong id="qty">1</strong><button id="plus">+</button></div><button id="add-detail" class="primary-btn" style="flex:1">Agregar al carrito</button></div>
-    <div class="info-grid" style="grid-template-columns:1fr 1fr"><div class="info-card" style="padding:15px"><h4>Ingredientes claros</h4><p>Consulta la información del lote y su presentación.</p></div><div class="info-card" style="padding:15px"><h4>Origen local</h4><p>Producción con identidad y atención cercana.</p></div></div>
-    <div class="code-panel" style="padding:16px;margin-top:16px"><h4>Un beneficio para tu próxima compra</h4><p>Revisa la ruleta de bienvenida y tus códigos de descuento o referidos en Mi cuenta. Los códigos no son acumulables.</p><a class="secondary-btn" href="contacto.html">Ver mis códigos →</a></div>
+    <div class="info-grid" style="grid-template-columns:1fr 1fr"><div class="info-card" style="padding:15px"><h4>100% natural</h4><p>Sin aditivos innecesarios.</p></div><div class="info-card" style="padding:15px"><h4>Origen local</h4><p>Producción con identidad.</p></div></div>
   </section>`;
   const qtyEl = root.querySelector('#qty');
-  root.querySelectorAll('[data-variant]').forEach(btn => btn.onclick = () => { chosen = productById(btn.dataset.variant); root.querySelectorAll('[data-variant]').forEach(b=>b.classList.toggle('active',b===btn)); root.querySelector('#detail-price').textContent = money(chosen.price); const im=root.querySelector('.detail-image img'); im.src=chosen.image; });
   root.querySelector('#minus').onclick = () => { qty = Math.max(1, qty-1); qtyEl.textContent = qty; };
   root.querySelector('#plus').onclick = () => { qty += 1; qtyEl.textContent = qty; };
-  root.querySelector('#add-detail').onclick = () => addToCart(chosen.id, qty);
-  const related = PRODUCTS.filter(v=>v.category!==p.category).slice(0,3);
-  const rec = document.createElement('section'); rec.className='section'; rec.innerHTML=`<div class="section-head"><div><h2>También podría gustarte</h2><p>Completa tu selección con otros favoritos de la colmena.</p></div></div><div class="product-grid">${related.map(v=>`<article class="product-card glass"><a class="product-image" href="producto.html?id=${v.id}"><img src="${v.image}" alt="${v.name}"><span class="tag">${v.category}</span></a><div class="product-body"><h3>${v.name}</h3><p>${v.size}</p><div class="price-row"><span class="price">${money(v.price)}</span><button class="add-btn" onclick="addToCart('${v.id}')">＋</button></div></div></article>`).join('')}</div><p class="small-note">Combo sugerido: elige dos productos y consulta por WhatsApp si hay una promoción vigente. Los descuentos se confirman antes del pago.</p>`;
-  root.after(rec);
+  root.querySelector('#add-detail').onclick = () => addToCart(p.id, qty);
 }
 
 function sendContactEmail(form) {
@@ -236,38 +222,45 @@ function sendContactMessage(event, form) {
   return false;
 }
 
-
-function applyDiscountCode() {
-  const input = document.querySelector('#discount-code');
-  const feedback = document.querySelector('#discount-feedback');
-  const code = (input?.value || '').trim().toUpperCase();
-  if (!DISCOUNTS[code]) { if (feedback) feedback.textContent = 'Ese código no está disponible. Revisa la sección Mis promociones.'; return; }
-  localStorage.setItem(DISCOUNT_KEY, JSON.stringify({code}));
-  saveCodes([...getCodes(), code]);
-  if (feedback) feedback.textContent = `¡Código ${code} aplicado! Se usará solo este descuento en el pedido.`;
-  renderCart(); renderAccountCodes();
-}
-function removeDiscountCode() { localStorage.removeItem(DISCOUNT_KEY); const f=document.querySelector('#discount-feedback'); if(f) f.textContent='Código retirado. Puedes aplicar otro, pero no se acumulan.'; renderCart(); }
-function renderAccountCodes() {
-  const el=document.querySelector('#account-codes'); if(!el) return;
-  const codes=[...new Set([...getCodes(),'API10','API5','APIREFERIDO'])];
-  el.innerHTML=codes.map(code=>`<div class="code-pill">${code} · ${DISCOUNTS[code].percent}% de descuento <button type="button" class="secondary-btn" style="float:right;padding:5px 9px" onclick="location.href='carrito.html?codigo=${code}'">Usar</button></div>`).join('')+'<p class="small-note">Cada código se aplica por separado. No acumulable con otros códigos ni promociones.</p>';
-}
-function setupDiscountQuery() {
-  const code=new URLSearchParams(location.search).get('codigo');
-  if(code && DISCOUNTS[code]) { localStorage.setItem(DISCOUNT_KEY,JSON.stringify({code})); saveCodes([...getCodes(),code]); }
-}
-function setupWelcomeWheel() {
-  if (localStorage.getItem(WHEEL_KEY)) return;
-  const overlay=document.createElement('div'); overlay.className='wheel-overlay'; overlay.id='welcome-wheel';
-  overlay.innerHTML=`<div class="wheel-card" role="dialog" aria-modal="true" aria-labelledby="wheel-title"><button type="button" aria-label="Cerrar" id="wheel-close" style="float:right;border:0;background:transparent;font-size:24px">×</button><p class="eyebrow">BIENVENIDO A FACTOR API</p><h2 id="wheel-title">Una sorpresa para tu primera visita</h2><div class="wheel-graphic">10% OFF</div><p>¡Tu premio está asegurado! Usa tu código de bienvenida para obtener un 10% de descuento en tu pedido.</p><div class="wheel-code">API10</div><button type="button" class="primary-btn" id="wheel-claim">Guardar mi descuento</button><p class="small-note">Código no acumulable. Descuento aplicado al subtotal de productos.</p></div>`;
-  document.body.appendChild(overlay); requestAnimationFrame(()=>overlay.classList.add('show'));
-  const close=()=>{localStorage.setItem(WHEEL_KEY,'1');overlay.classList.remove('show');setTimeout(()=>overlay.remove(),250)};
-  overlay.querySelector('#wheel-close').onclick=close;
-  overlay.querySelector('#wheel-claim').onclick=()=>{saveCodes([...getCodes(),'API10']);localStorage.setItem(DISCOUNT_KEY,JSON.stringify({code:'API10'}));toast('¡Premio guardado!','API10 te da 10% de descuento. No acumulable.');close();renderCart();renderAccountCodes();};
+function setupPrizeWheel() {
+  const wheel = document.querySelector('#prize-wheel');
+  const button = document.querySelector('#spin-wheel');
+  const result = document.querySelector('#wheel-result');
+  if (!wheel || !button || !result) return;
+  const prizes = [
+    { label: '5% de descuento', coupon: 'API5', angle: 315 },
+    { label: 'Cupón de 10% de descuento', coupon: 'API10', angle: 225 },
+    { label: 'Envío gratis', coupon: 'ENVIO', angle: 135 },
+    { label: '8% de descuento', coupon: 'API8', angle: 45 }
+  ];
+  const alreadySpun = sessionStorage.getItem('factorApiWheelSpun') === 'yes';
+  if (alreadySpun) {
+    const saved = sessionStorage.getItem('factorApiWheelPrize') || '';
+    result.textContent = saved ? `Tu premio de esta visita: ${saved}` : 'Ya giraste la ruleta en esta visita. ¡Guarda tu premio!';
+    button.disabled = true; button.textContent = 'Ya giraste';
+    return;
+  }
+  button.addEventListener('click', () => {
+    if (button.disabled) return;
+    button.disabled = true; button.textContent = 'Girando…';
+    const prize = prizes[Math.floor(Math.random() * prizes.length)];
+    const extraTurns = 5 + Math.floor(Math.random() * 3);
+    const finalAngle = extraTurns * 360 + prize.angle;
+    wheel.style.transform = `rotate(${finalAngle}deg)`;
+    wheel.classList.add('is-spinning');
+    window.setTimeout(() => {
+      wheel.classList.remove('is-spinning');
+      localStorage.setItem(COUPON_KEY, prize.coupon);
+      sessionStorage.setItem('factorApiWheelSpun', 'yes');
+      sessionStorage.setItem('factorApiWheelPrize', prize.label);
+      result.innerHTML = `🎉 ¡Ganaste <strong>${prize.label}</strong>! ${prize.coupon === 'ENVIO' ? 'El envío gratis se aplicará en el carrito.' : `El cupón ${prize.coupon} se aplicará en el carrito.`}`;
+      button.textContent = 'Premio conseguido';
+      toast('¡Premio de la ruleta!', prize.label);
+    }, 4200);
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  setupDiscountQuery(); cartCount(); setupStore(); setupProduct(); renderCart(); renderAccountCodes(); setupWelcomeWheel();
+  cartCount(); setupStore(); setupProduct(); renderCart(); setupPrizeWheel();
   const year = document.querySelector('#year'); if (year) year.textContent = new Date().getFullYear();
 });

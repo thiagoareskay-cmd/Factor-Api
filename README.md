@@ -55,13 +55,3 @@ En `app.js`, reemplaza `51941983088` por el número real del negocio, usando có
 - Después de confirmar los cambios, espera a que termine el despliegue de Pages y recarga la web con `Cmd + Shift + R` en Mac.
 
 Las imágenes están incluidas en este ZIP. Si el sitio publicado sigue sin mostrarlas, verifica en GitHub que exista `assets/logo.png` y que al abrirlo desde el repositorio se vea la imagen.
-
-
-## Actualización de mejoras (2026-10-10)
-- Se preparó un checkpoint independiente antes de editar: `factor-api-CHECKPOINT-antes-de-cambios.zip`.
-- El carrito muestra el contador al lado izquierdo del icono animado.
-- Se añadieron cupones API10 (10%), API5 (5%) y APIREFERIDO (5%); solo puede usarse uno a la vez. Los códigos y el carrito se guardan localmente en el navegador.
-- La ruleta de bienvenida ofrece siempre el código API10 en la primera visita del navegador.
-- Las páginas de producto muestran selectores de presentación, información de etiquetado orientativa, productos relacionados y recordatorio de promociones.
-- Se añadieron métodos de pago informativos (Yape, Plin y transferencia), notas de envío y contenido ampliado de origen/proceso.
-- IMPORTANTE: este sitio estático no valida cupones de forma segura en servidor, no procesa pagos ni genera fechas de envasado automáticamente. Confirmar fecha/lote real en la etiqueta física y revisar los pedidos antes de cobrar. Los datos de códigos se guardan en el navegador y pueden modificarse por el visitante.
