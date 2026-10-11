@@ -264,7 +264,9 @@ function setupPrizeWheel() {
 }
 
 function createWheelPopup() {
-  // La ruleta aparece al entrar al sitio, independientemente de la página de entrada.
+  // La ruleta es un anuncio superpuesto SOLO en Home, no una sección del contenido.
+  const page = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  if (page !== '' && page !== 'index.html' && page !== 'home.html') return;
   if (sessionStorage.getItem('factorApiWheelPopupSeen') === 'yes') return;
   if (localStorage.getItem(WHEEL_SPUN_KEY) === 'yes') return;
   const popup = document.createElement('div');
