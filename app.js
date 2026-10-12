@@ -90,13 +90,16 @@ function renderCart() {
     </div>`;
   }).join('');
   const coupon = localStorage.getItem(COUPON_KEY) || '';
-  const discountRate = coupon === 'API10' ? 0.10 : coupon === 'API8' ? 0.08 : coupon === 'API5' ? 0.05 : 0;
-  const discount = subtotal * discountRate;
-  const shipping = subtotal >= 80 || coupon === 'ENVIO' ? 0 : 7;
+  const discountRate = coupon === 'API15' ? 0.15 : 0;
+  const fixedDiscount = coupon === 'S5' ? 5 : coupon === 'S10' ? 10 : 0;
+  const discount = Math.min(subtotal, subtotal * discountRate + fixedDiscount);
+  const shipping = subtotal >= 80 ? 0 : 7;
+  const freePen = coupon === 'LAPICERO';
   summary.innerHTML = `<h3>🛒 Resumen del pedido</h3>
     <div class="summary-row"><span>Subtotal</span><strong>${money(subtotal)}</strong></div>
-    ${coupon ? `<div class="coupon-applied">🎟️ Cupón ${coupon} aplicado</div>` : `<div class="coupon-hint">🎁 ¿Quieres un descuento? <a href="index.html#ruleta">Gira la ruleta</a></div>`}
-    ${discount ? `<div class="summary-row discount-row"><span>Descuento ${Math.round(discountRate * 100)}%</span><strong>−${money(discount)}</strong></div>` : ''}
+    ${coupon ? `<div class="coupon-applied">🎟️ Premio ${coupon} aplicado</div>` : `<div class="coupon-hint">🎁 ¿Quieres un descuento? <a href="index.html#ruleta">Gira la ruleta</a></div>`}
+    ${freePen ? `<div class="summary-row"><span>✏️ 1 lapicero de regalo</span><strong>Gratis</strong></div>` : ''}
+    ${discount ? `<div class="summary-row discount-row"><span>Descuento ${coupon === 'API15' ? '15%' : ''}${coupon === 'S5' ? 'fijo' : ''}${coupon === 'S10' ? 'fijo' : ''}</span><strong>−${money(discount)}</strong></div>` : ''}
     <div class="summary-row"><span>Envío</span><strong>${shipping === 0 ? 'Gratis' : money(shipping)}</strong></div>
     <div class="summary-total"><span>Total</span><span>${money(subtotal - discount + shipping)}</span></div>
     <button class="primary-btn" style="width:100%;margin-top:18px" onclick="completeOrder()">Finalizar pedido</button>
@@ -109,9 +112,11 @@ function completeOrder() {
   const text = cart.map(i => { const p = productById(i.id); return `• ${p.name} ${p.size} x${i.qty} = ${money(p.price*i.qty)}`; }).join('%0A');
   const subtotal = cart.reduce((s,i) => s + productById(i.id).price*i.qty,0);
   const coupon = localStorage.getItem(COUPON_KEY) || '';
-  const discountRate = coupon === 'API10' ? 0.10 : coupon === 'API8' ? 0.08 : coupon === 'API5' ? 0.05 : 0;
-  const discount = subtotal * discountRate;
-  const shipping = subtotal >= 80 || coupon === 'ENVIO' ? 0 : 7;
+  const discountRate = coupon === 'API15' ? 0.15 : 0;
+  const fixedDiscount = coupon === 'S5' ? 5 : coupon === 'S10' ? 10 : 0;
+  const discount = Math.min(subtotal, subtotal * discountRate + fixedDiscount);
+  const shipping = subtotal >= 80 ? 0 : 7;
+  const freePen = coupon === 'LAPICERO';
   const total = subtotal - discount + shipping;
   const couponLine = coupon ? `%0ACupón: ${encodeURIComponent(coupon)}%0ADescuento (${Math.round(discountRate * 100)}%): ${encodeURIComponent(money(discount))}` : '';
   const phone = '51941983088'; // REEMPLAZA POR EL WHATSAPP REAL DEL NEGOCIO
@@ -230,10 +235,10 @@ function setupPrizeWheel() {
   const result = document.querySelector('#wheel-result');
   if (!wheel || !button || !result) return;
   const prizes = [
-    { label: '5% de descuento', coupon: 'API5', angle: 315 },
-    { label: 'Cupón de 10% de descuento', coupon: 'API10', angle: 225 },
-    { label: 'Envío gratis', coupon: 'ENVIO', angle: 135 },
-    { label: '8% de descuento', coupon: 'API8', angle: 45 }
+    { label: '1 lapicero gratis', coupon: 'LAPICERO', angle: 315 },
+    { label: 'S/5 de descuento', coupon: 'S5', angle: 225 },
+    { label: 'S/10 de descuento', coupon: 'S10', angle: 135 },
+    { label: '15% de descuento', coupon: 'API15', angle: 45 }
   ];
   const alreadySpun = localStorage.getItem(WHEEL_SPUN_KEY) === 'yes';
   if (alreadySpun) {
@@ -256,7 +261,7 @@ function setupPrizeWheel() {
       localStorage.setItem(COUPON_KEY, prize.coupon);
       localStorage.setItem(WHEEL_SPUN_KEY, 'yes');
       localStorage.setItem(WHEEL_PRIZE_KEY, prize.label);
-      result.innerHTML = `🎉 ¡Ganaste <strong>${prize.label}</strong>! ${prize.coupon === 'ENVIO' ? 'El envío gratis se aplicará en el carrito.' : `El cupón ${prize.coupon} se aplicará en el carrito.`}`;
+      result.innerHTML = `🎉 ¡Ganaste <strong>${prize.label}</strong>! ${prize.coupon === 'LAPICERO' ? 'Se añadirá 1 lapicero gratis a tu pedido.' : `El premio ${prize.coupon} se aplicará en el carrito.`}`;
       button.textContent = 'Premio conseguido';
       toast('¡Premio de la ruleta!', prize.label);
     }, 4200);
@@ -279,8 +284,8 @@ function createWheelPopup() {
     <div class="wheel-popup-backdrop" data-close-wheel></div>
     <section class="wheel-popup-card glass">
       <button class="wheel-popup-close" type="button" aria-label="Cerrar ruleta" data-close-wheel>×</button>
-      <div class="wheel-copy-popup"><span class="eyebrow">🎁 Un regalo de la colmena</span><h2 id="wheel-popup-title">¡Gira la ruleta de FACTOR API!</h2><p>Prueba tu suerte y descubre tu premio para la próxima compra. Entre las opciones está el cupón de <strong>10% de descuento</strong>.</p><div id="wheel-result" class="wheel-result" aria-live="polite">Tu premio aparecerá aquí 🍯</div><a href="tienda.html" class="secondary-btn wheel-shop-link">Ver productos</a></div>
-      <div class="wheel-play glass"><div class="wheel-pointer" aria-hidden="true">▼</div><div id="prize-wheel" class="prize-wheel" role="img" aria-label="Ruleta de premios: 5% de descuento, 10% de descuento, envío gratis y 8% de descuento"><span class="wheel-label label-1">5% OFF</span><span class="wheel-label label-2">10% OFF</span><span class="wheel-label label-3">Envío gratis</span><span class="wheel-label label-4">8% OFF</span><span class="wheel-center">🐝</span></div><button id="spin-wheel" class="primary-btn spin-btn" type="button">Girar</button><p class="wheel-note">Un giro por navegador. Tu premio se guarda y se aplica en el carrito.</p></div>
+      <div class="wheel-copy-popup"><span class="eyebrow">🎁 Un regalo de la colmena</span><h2 id="wheel-popup-title">¡Gira la ruleta de FACTOR API!</h2><p>Prueba tu suerte y descubre tu premio para la próxima compra. Puedes ganar 1 lapicero gratis, S/5 o S/10 de descuento, ¡o 15% de descuento!</p><div id="wheel-result" class="wheel-result" aria-live="polite">Tu premio aparecerá aquí 🍯</div><a href="tienda.html" class="secondary-btn wheel-shop-link">Ver productos</a></div>
+      <div class="wheel-play glass"><div class="wheel-pointer" aria-hidden="true">▼</div><div id="prize-wheel" class="prize-wheel" role="img" aria-label="Ruleta de premios: 1 lapicero gratis, S/5 de descuento, S/10 de descuento y 15% de descuento"><span class="wheel-label label-1">1 lapicero gratis</span><span class="wheel-label label-2">S/5 OFF</span><span class="wheel-label label-3">S/10 OFF</span><span class="wheel-label label-4">15% OFF</span><span class="wheel-center">🐝</span></div><button id="spin-wheel" class="primary-btn spin-btn" type="button">Girar</button><p class="wheel-note">Un giro por navegador. Tu premio se guarda y se aplica en el carrito.</p></div>
     </section>`;
   document.body.appendChild(popup);
   document.body.classList.add('wheel-popup-open');

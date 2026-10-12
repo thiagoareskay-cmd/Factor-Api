@@ -276,7 +276,7 @@ button { cursor: pointer; }
 .prize-wheel { width:min(100%,330px); aspect-ratio:1; border-radius:50%; position:relative; margin:12px auto 22px; border:9px solid #fff8df; outline:5px solid #dba927; background:conic-gradient(#f4c63f 0deg 90deg,#fff0ad 90deg 180deg,#e8a91e 180deg 270deg,#ffdf71 270deg 360deg); box-shadow:0 12px 28px rgba(117,80,0,.2),inset 0 0 0 2px rgba(120,80,0,.18); transition:transform 4.2s cubic-bezier(.12,.68,.08,1); }
 .prize-wheel::after { content:""; position:absolute; inset:50% 0 auto; height:2px; background:rgba(117,80,0,.24); transform:rotate(45deg); transform-origin:center; }
 .wheel-pointer { position:relative; z-index:2; margin-bottom:-25px; color:#7b210d; font-size:35px; line-height:1; filter:drop-shadow(0 2px 1px rgba(0,0,0,.15)); }
-.wheel-label { position:absolute; width:34%; max-width:100px; min-height:34px; display:flex; align-items:center; justify-content:center; padding:5px 3px; box-sizing:border-box; text-align:center; font-weight:1000; font-size:clamp(10px, 1.1vw, 13px); line-height:1.15; color:#4b3600; overflow-wrap:normal; word-break:normal; white-space:normal; transform:none; z-index:1; }
+.wheel-label { position:absolute; width:34%; max-width:100px; min-height:34px; display:flex; align-items:center; justify-content:center; padding:5px 3px; box-sizing:border-box; text-align:center; font-weight:1000; font-size:clamp(9px, 1vw, 12px); line-height:1.1; color:#4b3600; overflow-wrap:normal; word-break:normal; white-space:normal; transform:none; z-index:1; }
 .label-1 { top:22%; right:9%; }
 .label-2 { bottom:22%; right:9%; }
 .label-3 { bottom:22%; left:9%; }
